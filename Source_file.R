@@ -6,7 +6,9 @@ DNN_cross_validation <- function(directory, trait, folds, replicates){
   library(tidymodels)
   
   #Load data
-  matrix_file <- read_delim(paste0(directory, "/", "Spring_wheat_environmental_variable_matrix.txt"), delim = "\t", col_names = TRUE)
+  files <- list.files(path = directory, pattern = "^matrix_\\d+\\.txt$", full.names = TRUE)
+  df_list <- lapply(files, read_delim, delim = "\t", col_names = TRUE)
+  matrix_file <- Reduce(function(x, y) merge(x, y, by = "Environment"), df_list)
   significance_rankings <- read_delim(paste0(directory, "/", "Feature_significance_rankings.txt"))
   
   #Set percentages for permutation analysis
@@ -224,7 +226,9 @@ DNN_forecasting <- function(directory, trait, testing_years) {
   library(tidymodels)
   
   #Load data
-  matrix_file <- read_delim(paste0(directory, "/", "Spring_wheat_environmental_variable_matrix.txt"), delim = "\t", col_names = TRUE)
+  files <- list.files(path = directory, pattern = "^matrix_\\d+\\.txt$", full.names = TRUE)
+  df_list <- lapply(files, read_delim, delim = "\t", col_names = TRUE)
+  matrix_file <- Reduce(function(x, y) merge(x, y, by = "Environment"), df_list)
   significance_rankings <- read_delim(paste0(directory, "/", "Feature_significance_rankings.txt"))
   
   #Set percentages for permutation analysis
